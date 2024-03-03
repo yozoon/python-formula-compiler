@@ -1,7 +1,7 @@
 import ast
 from typing import Union
 
-from .formula_lexer import Lexer, TokenType, NumericToken
+from .lexer import Lexer, TokenType, NumericToken
 
 Node = Union[ast.Constant, ast.BinOp, ast.UnaryOp, ast.Name, ast.Call]
 
@@ -154,10 +154,38 @@ class Parser:
             node = ast.BinOp(left=node, op=op, right=self.term())
         return node
 
-    def parse(self) -> Node:
+    def parse(self) -> ast.Module:
+        """
+        Parses the formula and creates required boilerplate code for converting an AST
+        into a module that can later be compiled.
+        """
         result = self.expr()
         if self.current_token.type != TokenType.EOF:
             raise SyntaxError(
                 "Incomplete formula provided. Did you check if all parentheses are "
                 "matched?")
-        return result
+
+        return ast.Module(
+            body=[
+                ast.Import(names=[ast.alias(name="math")]),
+                ast.FunctionDef(
+                    name="fun",
+                    args=ast.arguments(
+                        posonlyargs=[],
+                        args=[
+                            ast.arg(arg="x",
+                                    annotation=ast.Name(id="int", ctx=ast.Load())),
+                        ],
+                        kwonlyargs=[],
+                        kw_defaults=[],
+                        defaults=[],
+                    ),
+                    body=[
+                        ast.Return(value=result),
+                    ],
+                    decorator_list=[],
+                    returns=ast.Name(id="float", ctx=ast.Load()),
+                )
+            ],
+            type_ignores=[],
+        )

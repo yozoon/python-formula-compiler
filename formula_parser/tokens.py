@@ -50,3 +50,12 @@ class NumericToken(Token):
 
     def __str__(self) -> str:
         return f"NumericToken({self.type=}, {self.value=})"
+
+
+RESERVED_KEYWORDS = {
+    "x": Token(type=TokenType.X),
+    "ln": Token(type=TokenType.Log),
+    "sqrt": Token(type=TokenType.Sqrt),
+    "exp": Token(type=TokenType.Exp),
+    "round": Token(type=TokenType.Round),
+}

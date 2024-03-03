@@ -1,37 +1,8 @@
 import ast
 import argparse
 
-from formula_compiler import Lexer, Parser, Node, compile_module
-
-
-def create_module(tree: Node):
-    """
-    Helper function to generate the required boilerplate code for converting an ASTs
-    into a module that can later be compiled.
-    """
-    return ast.Module(
-        body=[
-            ast.Import(names=[ast.alias(name="math")]),
-            ast.FunctionDef(
-                name="fun",
-                args=ast.arguments(
-                    posonlyargs=[],
-                    args=[
-                        ast.arg(arg="x", annotation=ast.Name(id="int", ctx=ast.Load())),
-                    ],
-                    kwonlyargs=[],
-                    kw_defaults=[],
-                    defaults=[],
-                ),
-                body=[
-                    ast.Return(value=tree),
-                ],
-                decorator_list=[],
-                returns=ast.Name(id="float", ctx=ast.Load()),
-            )
-        ],
-        type_ignores=[],
-    )
+from formula_parser import Lexer, Parser
+from ast_compiler import compile_module
 
 
 def main(args: argparse.Namespace) -> None:
@@ -39,18 +10,17 @@ def main(args: argparse.Namespace) -> None:
     parser = Parser(lexer=lexer)
 
     try:
-        tree = parser.parse()
+        module = parser.parse()
     except SyntaxError as e:
         print(f"SyntaxError: {e}")
         return
 
     print("====================\nAbstract Syntax Tree\n====================")
-    print(ast.dump(tree))
+    print(ast.dump(module))
 
-    if module := create_module(tree=tree):
-        if fun := compile_module(module=module):
-            print("\n=================\nEvaluation Result\n=================")
-            print(f"f({args.x}) = {fun(args.x)}")
+    if fun := compile_module(module=module):
+        print("\n=================\nEvaluation Result\n=================")
+        print(f"f({args.x}) = {fun(args.x)}")
 
 
 if __name__ == "__main__":
