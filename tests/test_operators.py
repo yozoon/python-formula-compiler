@@ -20,6 +20,41 @@ def test_x():
     assert callable(1) == 1
 
 
+def test_negative():
+    callable = create_callable("-1")
+    assert callable(0) == -1
+
+
+def test_positive():
+    callable = create_callable("+1")
+    assert callable(0) == 1
+
+
+def test_plus():
+    callable = create_callable("1+1")
+    assert callable(0) == 2
+
+
+def test_minus():
+    callable = create_callable("1-1")
+    assert callable(0) == 0
+
+
+def test_mult():
+    callable = create_callable("10*10")
+    assert callable(0) == 100
+
+
+def test_div():
+    callable = create_callable("1/2")
+    assert callable(0) == 1 / 2
+
+
+def test_pow():
+    callable = create_callable("2^2")
+    assert callable(0) == 4
+
+
 def test_round():
     callable = create_callable("round(4.2)")
     assert callable(0) == round(4.2)
