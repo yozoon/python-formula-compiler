@@ -3,7 +3,9 @@ from typing import Union
 
 from .lexer import Lexer, TokenType, NumericToken
 
-Node = Union[ast.Constant, ast.BinOp, ast.UnaryOp, ast.Name, ast.Call]
+Node = Union[ast.Constant, ast.BinOp, ast.UnaryOp, ast.Name, ast.Call, ast.Attribute]
+
+FUNCTION_NAME = "fun"
 
 
 class Parser:
@@ -30,8 +32,8 @@ class Parser:
 
     def factor(self) -> Node:
         """
-        factor : (ADD | SUB) factor | statement factor | INTEGER | FLOAT | X
-                    | LPAREN expr RPAREN
+        factor : (ADD | SUB) factor | MATH_OP factor | INTEGER | FLOAT | X
+                    | PI LPAREN RPAREN | LPAREN expr RPAREN
         """
         token = self.current_token
 
@@ -43,6 +45,18 @@ class Parser:
             self.eat(TokenType.Sub)
             return ast.UnaryOp(op=ast.USub(), operand=self.factor())
 
+        # Constants
+        elif token.type == TokenType.Pi:
+            self.eat(TokenType.Pi)
+            self.eat(TokenType.LParen)
+            self.eat(TokenType.RParen)
+            return ast.Attribute(
+                value=ast.Name(id='math', ctx=ast.Load()),
+                attr='pi',
+                ctx=ast.Load(),
+            )
+
+        # Square Root
         elif token.type == TokenType.Sqrt:
             self.eat(TokenType.Sqrt)
             return ast.Call(
@@ -55,12 +69,25 @@ class Parser:
                 keywords=[],
             )
 
+        # Logarithms and Exponential
         elif token.type == TokenType.Log:
             self.eat(TokenType.Log)
             return ast.Call(
                 func=ast.Attribute(
                     value=ast.Name(id='math', ctx=ast.Load()),
                     attr='log',
+                    ctx=ast.Load(),
+                ),
+                args=[self.factor()],
+                keywords=[],
+            )
+
+        elif token.type == TokenType.Log10:
+            self.eat(TokenType.Log10)
+            return ast.Call(
+                func=ast.Attribute(
+                    value=ast.Name(id='math', ctx=ast.Load()),
+                    attr='log10',
                     ctx=ast.Load(),
                 ),
                 args=[self.factor()],
@@ -79,6 +106,153 @@ class Parser:
                 keywords=[],
             )
 
+        # Trigonometric Functions
+        elif token.type == TokenType.Sin:
+            self.eat(TokenType.Sin)
+            return ast.Call(
+                func=ast.Attribute(
+                    value=ast.Name(id='math', ctx=ast.Load()),
+                    attr='sin',
+                    ctx=ast.Load(),
+                ),
+                args=[self.factor()],
+                keywords=[],
+            )
+
+        elif token.type == TokenType.Cos:
+            self.eat(TokenType.Cos)
+            return ast.Call(
+                func=ast.Attribute(
+                    value=ast.Name(id='math', ctx=ast.Load()),
+                    attr='cos',
+                    ctx=ast.Load(),
+                ),
+                args=[self.factor()],
+                keywords=[],
+            )
+
+        elif token.type == TokenType.Tan:
+            self.eat(TokenType.Tan)
+            return ast.Call(
+                func=ast.Attribute(
+                    value=ast.Name(id='math', ctx=ast.Load()),
+                    attr='tan',
+                    ctx=ast.Load(),
+                ),
+                args=[self.factor()],
+                keywords=[],
+            )
+
+        elif token.type == TokenType.ASin:
+            self.eat(TokenType.ASin)
+            return ast.Call(
+                func=ast.Attribute(
+                    value=ast.Name(id='math', ctx=ast.Load()),
+                    attr='asin',
+                    ctx=ast.Load(),
+                ),
+                args=[self.factor()],
+                keywords=[],
+            )
+
+        elif token.type == TokenType.ACos:
+            self.eat(TokenType.ACos)
+            return ast.Call(
+                func=ast.Attribute(
+                    value=ast.Name(id='math', ctx=ast.Load()),
+                    attr='acos',
+                    ctx=ast.Load(),
+                ),
+                args=[self.factor()],
+                keywords=[],
+            )
+
+        elif token.type == TokenType.ATan:
+            self.eat(TokenType.ATan)
+            return ast.Call(
+                func=ast.Attribute(
+                    value=ast.Name(id='math', ctx=ast.Load()),
+                    attr='atan',
+                    ctx=ast.Load(),
+                ),
+                args=[self.factor()],
+                keywords=[],
+            )
+
+        # Hyperbolic Functions
+        elif token.type == TokenType.Sinh:
+            self.eat(TokenType.Sinh)
+            return ast.Call(
+                func=ast.Attribute(
+                    value=ast.Name(id='math', ctx=ast.Load()),
+                    attr='sinh',
+                    ctx=ast.Load(),
+                ),
+                args=[self.factor()],
+                keywords=[],
+            )
+
+        elif token.type == TokenType.Cosh:
+            self.eat(TokenType.Cosh)
+            return ast.Call(
+                func=ast.Attribute(
+                    value=ast.Name(id='math', ctx=ast.Load()),
+                    attr='cosh',
+                    ctx=ast.Load(),
+                ),
+                args=[self.factor()],
+                keywords=[],
+            )
+
+        elif token.type == TokenType.Tanh:
+            self.eat(TokenType.Tanh)
+            return ast.Call(
+                func=ast.Attribute(
+                    value=ast.Name(id='math', ctx=ast.Load()),
+                    attr='tanh',
+                    ctx=ast.Load(),
+                ),
+                args=[self.factor()],
+                keywords=[],
+            )
+
+        elif token.type == TokenType.ASinh:
+            self.eat(TokenType.ASinh)
+            return ast.Call(
+                func=ast.Attribute(
+                    value=ast.Name(id='math', ctx=ast.Load()),
+                    attr='asinh',
+                    ctx=ast.Load(),
+                ),
+                args=[self.factor()],
+                keywords=[],
+            )
+
+        elif token.type == TokenType.ACosh:
+            self.eat(TokenType.ACosh)
+            return ast.Call(
+                func=ast.Attribute(
+                    value=ast.Name(id='math', ctx=ast.Load()),
+                    attr='acosh',
+                    ctx=ast.Load(),
+                ),
+                args=[self.factor()],
+                keywords=[],
+            )
+
+        elif token.type == TokenType.ATanh:
+            self.eat(TokenType.ATanh)
+            return ast.Call(
+                func=ast.Attribute(
+                    value=ast.Name(id='math', ctx=ast.Load()),
+                    attr='atanh',
+                    ctx=ast.Load(),
+                ),
+                args=[self.factor()],
+                keywords=[],
+            )
+
+        # Rounding
         elif token.type == TokenType.Round:
             self.eat(TokenType.Round)
             return ast.Call(
@@ -106,7 +280,7 @@ class Parser:
             return ast.Name(id='x', ctx=ast.Load())
 
         else:
-            raise SyntaxError(f"Unimplemented token: {token.type}")
+            raise NotImplementedError(f"{token.type}")
 
     def pow(self) -> Node:
         """ exp : factor (POW factor)* """

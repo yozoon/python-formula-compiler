@@ -16,14 +16,38 @@ class TokenType(Enum):
     Div = auto()
     Pow = auto()
 
-    # A variable
+    # Constants
+    Pi = auto()
+
+    # A Variable
     X = auto()
 
-    # Mathematical Operators
-    Log = auto()
+    # Square Root
     Sqrt = auto()
+
+    # Logarithm and Exponential
+    Log = auto()
+    Log10 = auto()
     Exp = auto()
+
+    # Rounding
     Round = auto()
+
+    # Trigonometric Functions
+    Sin = auto()
+    Cos = auto()
+    Tan = auto()
+    ASin = auto()
+    ACos = auto()
+    ATan = auto()
+
+    # Hyperbolic Functions
+    Sinh = auto()
+    Cosh = auto()
+    Tanh = auto()
+    ASinh = auto()
+    ACosh = auto()
+    ATanh = auto()
 
     # Structure
     LParen = auto()
@@ -37,6 +61,9 @@ class Token:
     def __init__(self, /, type: TokenType):
         self.type = type
 
+    def __eq__(self, other: "Token") -> bool:
+        return self.type == other.type
+
     def __str__(self) -> str:
         return f"Token({self.type=})"
 
@@ -48,14 +75,38 @@ class NumericToken(Token):
         super().__init__(type)
         self.value = value
 
+    def __eq__(self, other: "NumericToken") -> bool:
+        return super().__eq__(other) and self.value == other.value
+
     def __str__(self) -> str:
         return f"NumericToken({self.type=}, {self.value=})"
 
 
 RESERVED_KEYWORDS = {
+    # Variable
     "x": Token(type=TokenType.X),
-    "ln": Token(type=TokenType.Log),
+    # Constants
+    "pi": Token(type=TokenType.Pi),
+    # Square Root
     "sqrt": Token(type=TokenType.Sqrt),
+    # Logarithms and Exponential
+    "ln": Token(type=TokenType.Log),
     "exp": Token(type=TokenType.Exp),
+    "log10": Token(type=TokenType.Log10),
+    # Rounding
     "round": Token(type=TokenType.Round),
+    # Trigonometric Functions
+    "sin": Token(type=TokenType.Sin),
+    "cos": Token(type=TokenType.Cos),
+    "tan": Token(type=TokenType.Tan),
+    "asin": Token(type=TokenType.ASin),
+    "acos": Token(type=TokenType.ACos),
+    "atan": Token(type=TokenType.ATan),
+    # Hyperbolic Functions
+    "sinh": Token(type=TokenType.Sinh),
+    "cosh": Token(type=TokenType.Cosh),
+    "tanh": Token(type=TokenType.Tanh),
+    "asinh": Token(type=TokenType.ASinh),
+    "acosh": Token(type=TokenType.ACosh),
+    "atanh": Token(type=TokenType.ATanh),
 }
