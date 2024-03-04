@@ -42,3 +42,4 @@ pip install git+https://github.com/yozoon/python-formula-compiler.git
   * ASINH
   * ACOSH
   * ATANH
+* PI()
