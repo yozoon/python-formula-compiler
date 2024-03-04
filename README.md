@@ -10,6 +10,15 @@ The implementation is based on a simplified version of the Pascal parser written
 pip install git+https://github.com/yozoon/python-formula-compiler.git
 ```
 
+## Example
+
+```python
+>>> from formula_compiler import compile_formula
+>>> fun = compile_formula("2*X")
+>>> fun(21)
+42
+```
+
 ## Supported Operations
 
 * +, -, *, /, ^, (, )
