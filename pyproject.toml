@@ -1,0 +1,30 @@
+[project]
+name = "formula-compiler"
+version = "2024.03.04"
+description = "A compiler to create Python callables from Excel formulas."
+authors = [
+  { name="Julius Piso", email="julius@piso.at" },
+]
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[build-system]
+requires = ["setuptools >= 61.0"]
+build-backend = "setuptools.build_meta"
+
+[project.optional-dependencies]
+test = ["pytest-cov ~=3.0.0"]
+
+[tool.pytest.ini_options]
+addopts = "--cov --cov-report html --cov-report term-missing"
+
+[tool.coverage.run]
+source = ["src"]
+
+[tool.setuptools.packages.find]
+where = ["src"]

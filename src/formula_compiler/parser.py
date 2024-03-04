@@ -13,6 +13,7 @@ class Parser:
     def __init__(self, lexer: Lexer):
         self.lexer = lexer
         self.current_token = self.lexer.get_next_token()
+        self.variables: set[TokenType] = set()
 
     def eat(self, token_type: TokenType):
         # compare the current token type with the passed token
@@ -27,8 +28,8 @@ class Parser:
         elif self.current_token.type == TokenType.EOF:
             raise SyntaxError("Did you forget to close parentheses?")
         else:
-            raise SyntaxError(
-                f"Token types do not match: {self.current_token.type} != {token_type}")
+            raise SyntaxError(f"Token types do not match: {self.current_token.type} "
+                              f"!= {token_type}")
 
     def factor(self) -> Node:
         """
@@ -277,7 +278,8 @@ class Parser:
 
         elif token.type == TokenType.X:
             self.eat(TokenType.X)
-            return ast.Name(id='x', ctx=ast.Load())
+            self.variables.add(TokenType.X)
+            return ast.Name(id='x0', ctx=ast.Load())
 
         else:
             raise NotImplementedError(f"{token.type}")
@@ -330,15 +332,18 @@ class Parser:
 
     def parse(self) -> ast.Module:
         """
-        Parses the formula and creates required boilerplate code for converting an AST
-        into a module that can later be compiled.
+        Parses the formula and creates required boilerplate code for converting
+        an AST into a module that can later be compiled.
         """
         result = self.expr()
         if self.current_token.type != TokenType.EOF:
-            raise SyntaxError(
-                "Incomplete formula provided. Did you check if all parentheses are "
-                "matched?")
+            raise SyntaxError("Incomplete formula provided. Did you check if all "
+                              "parentheses are matched?")
 
+        args = [
+            ast.arg(arg=f"x{i}", annotation=ast.Name(id="float", ctx=ast.Load()))
+            for i in range(len(self.variables))
+        ]
         return ast.Module(
             body=[
                 ast.Import(names=[ast.alias(name="math")]),
@@ -346,10 +351,7 @@ class Parser:
                     name="fun",
                     args=ast.arguments(
                         posonlyargs=[],
-                        args=[
-                            ast.arg(arg="x",
-                                    annotation=ast.Name(id="int", ctx=ast.Load())),
-                        ],
+                        args=args,
                         kwonlyargs=[],
                         kw_defaults=[],
                         defaults=[],

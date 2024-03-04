@@ -1,4 +1,4 @@
-from formula_parser.lexer import Lexer, NumericToken, Token, TokenType
+from formula_compiler.lexer import Lexer, NumericToken, Token, TokenType
 
 
 def test_int():
