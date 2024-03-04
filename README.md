@@ -4,6 +4,14 @@ This repository provides a parser for a subset of Excel formula operations. The 
 
 The implementation is based on a simplified version of the Pascal parser written by Ruslan Spivak ([link](https://github.com/rspivak/lsbasi/)).
 
+## Installation
+
+```sh
+git clone https://github.com/yozoon/python-formula-compiler.git
+cd python-formula-compiler/
+pip install .
+```
+
 ## Supported Operations
 
 * +, -, *, /, ^, (, )
