@@ -1,4 +1,4 @@
-# Excel Formula Compiler
+# Python Formula Compiler
 
 This repository provides a parser for a subset of Excel formula operations. The parsed formula can then be compiled into a Python callable and used like a native Python function. Currently, only single valued formulae are supported.
 
