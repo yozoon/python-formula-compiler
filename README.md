@@ -7,9 +7,7 @@ The implementation is based on a simplified version of the Pascal parser written
 ## Installation
 
 ```sh
-git clone https://github.com/yozoon/python-formula-compiler.git
-cd python-formula-compiler/
-pip install .
+pip install git+https://github.com/yozoon/python-formula-compiler.git
 ```
 
 ## Supported Operations
