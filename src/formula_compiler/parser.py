@@ -25,8 +25,6 @@ class Parser:
 
         if self.current_token.type == token_type:
             self.current_token = self.lexer.get_next_token()
-        elif self.current_token.type == TokenType.EOF:
-            raise SyntaxError("Did you forget to close parentheses?")
         else:
             raise SyntaxError(f"Token types do not match: {self.current_token.type} "
                               f"!= {token_type}")
@@ -282,7 +280,7 @@ class Parser:
             return ast.Name(id=f"x{token.index}", ctx=ast.Load())
 
         elif token.type == TokenType.EOF:
-            self.eat(TokenType.EOF)
+            raise SyntaxError("Did you forget to close parentheses?")
 
         else:
             raise NotImplementedError(f"{token.type}")
