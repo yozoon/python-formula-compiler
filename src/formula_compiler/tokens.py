@@ -85,8 +85,8 @@ class ConstantToken(Token):
 class VariableToken(Token):
     __slots__ = ("type", "index")
 
-    def __init__(self, type: TokenType, index: int):
-        super().__init__(type)
+    def __init__(self, index: int):
+        super().__init__(TokenType.X)
         self.index = index
 
     def __eq__(self, other: "VariableToken") -> bool:

@@ -1,3 +1,4 @@
+import pytest
 import math
 from typing import Callable
 
@@ -148,3 +149,8 @@ def test_acosh():
 def test_atanh():
     callable = create_callable("ATANH(0.5)")
     assert callable() == math.atanh(0.5)
+
+
+def test_unmatched():
+    with pytest.raises(SyntaxError):
+        create_callable(text="(")

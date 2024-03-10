@@ -36,7 +36,7 @@ class Lexer:
         if token := RESERVED_KEYWORDS.get(result, None):
             return token
         else:
-            raise SyntaxError(f"Unknown keyword {result}")
+            raise ValueError(f"Unknown keyword {result}")
 
     def number(self) -> ConstantToken:
         """Return a (multidigit) integer or float consumed from the input."""
@@ -78,9 +78,9 @@ class Lexer:
             result += self.current_char
             self.advance()
         if not result:
-            return VariableToken(type=TokenType.X, index=0)
+            return VariableToken(index=0)
 
-        return VariableToken(type=TokenType.X, index=int(result))
+        return VariableToken(index=int(result))
 
     def get_next_token(self) -> Token:
         while self.current_char is not None:
@@ -121,6 +121,6 @@ class Lexer:
                 self.advance()
                 return Token(type=TokenType.RParen)
 
-            self.advance()
+            raise ValueError(f"Unhandled character '{self.current_char}'")
 
         return Token(type=TokenType.EOF)

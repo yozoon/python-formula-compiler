@@ -1,6 +1,5 @@
 import ast
-import logging
-from typing import Optional, Callable
+from typing import Callable
 
 from .parser import FUNCTION_NAME
 
@@ -9,7 +8,7 @@ def compile_module(
     module: ast.Module,
     n_args: int = 1,
     strict: bool = True,
-) -> Optional[Callable[..., float]]:
+) -> Callable[..., float]:
     """
     Compiles a module into a callable that takes `n_args` numeric values as
     arguments and returns a single numeric value.
@@ -21,7 +20,7 @@ def compile_module(
             break
 
     if not f_def:
-        return
+        raise ValueError("Provided module does not compile a `FunctionDef`!")
 
     n_args_required = len(f_def.args.args)
     # If strict is True, we expect exactly the module must have `n_args`
@@ -29,9 +28,8 @@ def compile_module(
     # `n_args` arguments.
     condition = (n_args_required != n_args if strict else n_args_required > n_args)
     if condition:
-        logging.warning(f"The provided module requires {n_args_required} arguments, but "
-                        f"the compiler was instructed to expect {n_args}!")
-        return
+        raise ValueError(f"The provided module requires {n_args_required} arguments, but "
+                         f"the compiler was instructed to expect {n_args}!")
 
     # In order for the callable to also reflect the behavior invoked with
     # strict=False, add dummy arguments, such that the compiled Callable does
@@ -46,6 +44,11 @@ def compile_module(
                     annotation=ast.Name(id="float", ctx=ast.Load()),
                 ))
 
+    # Raises ValueError if e.g. body is empty.
+    # Raises TypeError if no (return) statement is provided in body
+    # Raises SyntaxError if module contains invalid syntax (e.g. return outside of
+    # function)
+    # Can also raise MemoryError and RecursionError
     code = compile(
         ast.fix_missing_locations(module),
         filename="tmp",
@@ -53,10 +56,6 @@ def compile_module(
     )
     namespace = {}
 
-    try:
-        exec(code, namespace)
-    except SyntaxError as e:
-        logging.warning(e)
-        return
+    exec(code, namespace)
 
     return namespace.get(FUNCTION_NAME, None)

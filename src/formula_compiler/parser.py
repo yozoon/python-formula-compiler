@@ -281,6 +281,9 @@ class Parser:
             self.variables.add(token.index)
             return ast.Name(id=f"x{token.index}", ctx=ast.Load())
 
+        elif token.type == TokenType.EOF:
+            self.eat(TokenType.EOF)
+
         else:
             raise NotImplementedError(f"{token.type}")
 
