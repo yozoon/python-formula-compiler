@@ -20,6 +20,11 @@ def test_x():
     assert callable(1) == 1
 
 
+def test_x0_plus_x1():
+    callable = create_callable("X0 + X1", n_args=2)
+    assert callable(1, 2) == 3
+
+
 def test_negative():
     callable = create_callable("-1")
     assert callable() == -1

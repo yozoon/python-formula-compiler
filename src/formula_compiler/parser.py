@@ -1,7 +1,7 @@
 import ast
 from typing import Union
 
-from .lexer import Lexer, TokenType, NumericToken
+from .lexer import Lexer, TokenType, ConstantToken, VariableToken
 
 Node = Union[ast.Constant, ast.BinOp, ast.UnaryOp, ast.Name, ast.Call, ast.Attribute]
 
@@ -13,7 +13,7 @@ class Parser:
     def __init__(self, lexer: Lexer):
         self.lexer = lexer
         self.current_token = self.lexer.get_next_token()
-        self.variables: set[TokenType] = set()
+        self.variables: set[int] = set()
 
     def eat(self, token_type: TokenType):
         # compare the current token type with the passed token
@@ -262,7 +262,7 @@ class Parser:
                 keywords=[],
             )
 
-        elif isinstance(token, NumericToken):
+        elif isinstance(token, ConstantToken):
             if token.type == TokenType.Integer:
                 self.eat(TokenType.Integer)
                 return ast.Constant(value=token.value)
@@ -276,10 +276,10 @@ class Parser:
             self.eat(TokenType.RParen)
             return result
 
-        elif token.type == TokenType.X:
+        elif isinstance(token, VariableToken):
             self.eat(TokenType.X)
-            self.variables.add(TokenType.X)
-            return ast.Name(id='x0', ctx=ast.Load())
+            self.variables.add(token.index)
+            return ast.Name(id=f"x{token.index}", ctx=ast.Load())
 
         else:
             raise NotImplementedError(f"{token.type}")
@@ -342,7 +342,7 @@ class Parser:
 
         args = [
             ast.arg(arg=f"x{i}", annotation=ast.Name(id="float", ctx=ast.Load()))
-            for i in range(len(self.variables))
+            for i in self.variables
         ]
         return ast.Module(
             body=[

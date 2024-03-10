@@ -68,23 +68,35 @@ class Token:
         return f"Token({self.type=})"
 
 
-class NumericToken(Token):
+class ConstantToken(Token):
     __slots__ = ("type", "value")
 
     def __init__(self, type: TokenType, value: NumericType):
         super().__init__(type)
         self.value = value
 
-    def __eq__(self, other: "NumericToken") -> bool:
+    def __eq__(self, other: "ConstantToken") -> bool:
         return super().__eq__(other) and self.value == other.value
 
     def __str__(self) -> str:
-        return f"NumericToken({self.type=}, {self.value=})"
+        return f"ConstantToken({self.type=}, {self.value=})"
+
+
+class VariableToken(Token):
+    __slots__ = ("type", "index")
+
+    def __init__(self, type: TokenType, index: int):
+        super().__init__(type)
+        self.index = index
+
+    def __eq__(self, other: "VariableToken") -> bool:
+        return super().__eq__(other) and self.index == other.index
+
+    def __str__(self) -> str:
+        return f"VariableToken({self.type=}, {self.index=})"
 
 
 RESERVED_KEYWORDS = {
-    # Variable
-    "x": Token(type=TokenType.X),
     # Constants
     "pi": Token(type=TokenType.Pi),
     # Square Root

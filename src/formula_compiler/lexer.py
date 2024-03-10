@@ -1,4 +1,4 @@
-from .tokens import Token, NumericToken, TokenType, RESERVED_KEYWORDS
+from .tokens import Token, ConstantToken, VariableToken, TokenType, RESERVED_KEYWORDS
 
 
 class Lexer:
@@ -38,7 +38,7 @@ class Lexer:
         else:
             raise SyntaxError(f"Unknown keyword {result}")
 
-    def number(self) -> NumericToken:
+    def number(self) -> ConstantToken:
         """Return a (multidigit) integer or float consumed from the input."""
         result = ''
         while self.current_char is not None and self.current_char.isdigit():
@@ -68,16 +68,29 @@ class Lexer:
 
         # Check if the number is floating point or integer and cast to corresponding type
         if any(i in result for i in (".", "e")):
-            return NumericToken(type=TokenType.Float, value=float(result))
-        return NumericToken(type=TokenType.Integer, value=int(result))
+            return ConstantToken(type=TokenType.Float, value=float(result))
+        return ConstantToken(type=TokenType.Integer, value=int(result))
+
+    def variable(self) -> VariableToken:
+        self.advance()
+        result = ''
+        while self.current_char is not None and self.current_char.isdigit():
+            result += self.current_char
+            self.advance()
+        if not result:
+            return VariableToken(type=TokenType.X, index=0)
+
+        return VariableToken(type=TokenType.X, index=int(result))
 
     def get_next_token(self) -> Token:
         while self.current_char is not None:
+            if self.current_char == "x":
+                return self.variable()
 
-            if self.current_char.isalpha():
+            elif self.current_char.isalpha():
                 return self._id()
 
-            if self.current_char is not None and self.current_char.isdigit():
+            elif self.current_char is not None and self.current_char.isdigit():
                 return self.number()
 
             elif self.current_char == "+":

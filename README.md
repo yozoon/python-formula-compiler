@@ -23,7 +23,7 @@ pip install git+https://github.com/yozoon/python-formula-compiler.git
 
 * +, -, *, /, ^, (, )
 * ROUND
-* X (placeholder for numeric input)
+* X (X0), X1, X2, ... (placeholder for numeric input)
 * LN
 * LOG10
 * EXP
