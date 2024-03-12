@@ -1,6 +1,6 @@
 # Python Formula Compiler
 
-This repository provides a parser for a subset of Excel formula operations. The parsed formula can then be compiled into a Python callable and used like a native Python function. Currently, only single valued formulae are supported.
+This repository provides a parser for a subset of Excel formula operations. The parsed formula can then be compiled into a Python callable and used like a native Python function.
 
 The implementation is based on a simplified version of the Pascal parser written by Ruslan Spivak ([link](https://github.com/rspivak/lsbasi/)).
 
